@@ -23,11 +23,11 @@ class LedBut():
         b = not GPIO.input(17)
         if b != self.but:
             self.but = b
-            self.server.send("B1" if b else "B0")
+            self.server.send("b1" if b else "b0")
         
     def cmdLed(self, cmd):
         GPIO.output(4, cmd[1] == "1")
     
     def cmdBut(self, cmd):
         b = not GPIO.input(17)
-        self.server.send("B1" if b else "B0")
+        self.server.send("b1" if b else "b0")
