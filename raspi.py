@@ -16,8 +16,14 @@ class App():
         self.server = server.Server()   
         self.server.onCmd = self.onCmd
         self.acel = adxl345.ADXL345()
+        self.acquire = False
 
         while True:
+            if self.acquire:
+                v = self.acel.getData()
+                msg = "a {0} {1} {2}".format(v.x, v.y, v.z)
+                print(msg)                
+                self.server.send(msg)
             time.sleep(.1)
     
     def onCmd(self, cmd):
@@ -28,13 +34,11 @@ class App():
             self.server.send(self.version)       
         elif cmd[0] == "i":
             id = self.acel.ID()
-            msg = "ID= {0:02X}".format(id)
+            msg = "ID= 0x{0:02X}".format(id)
             print(msg)
             self.server.send(msg)       
         elif cmd[0] == "a":
-            v = self.acel.getData()
-#            print "X=0x%0.4X Y=0x%0.4X Z=0x%0.4X" % (v.x, v.y, v.z)
-            print("a {0} {1} {2}").format(v.x, v.y, v.z)
+            self.acquire = True if cmd[1] == "1" else False
         
     def exit(self):
         print("\rYou pressed Ctrl+C!")
